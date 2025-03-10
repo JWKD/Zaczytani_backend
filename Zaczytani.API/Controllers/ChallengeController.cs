@@ -57,4 +57,11 @@ public class ChallengeController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [HttpDelete("{challengeId}/Progress")]
+    public async Task<IActionResult> DeleteChallengeProgress([FromRoute] Guid challengeId)
+    {
+        var command = new DeleteChallengeProgressCommand(challengeId);
+        await _mediator.Send(command);
+        return NoContent();
+    }
 }

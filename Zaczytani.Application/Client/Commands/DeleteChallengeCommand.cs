@@ -18,26 +18,14 @@ public record DeleteChallengeCommand(Guid ChallengeId) : IRequest, IUserIdAssign
         {
             var challenge = await _challengeRepository.GetChallenge(request.ChallengeId, cancellationToken)
                 ?? throw new NotFoundException("Challenge not found or you do not have access to it.");
-            if (challenge.UserId == request.UserId)
-            {
-                await _challengeRepository.DeleteProgressByChallengeIdAsync(request.ChallengeId, cancellationToken);
-                await _challengeRepository.DeleteAsync(request.ChallengeId, cancellationToken);
-            }
-            else
-            {
-                var progress = (await _challengeRepository.GetChallengesWithProgressByUserId(request.UserId, cancellationToken))
-                    .FirstOrDefault(p => p.ChallengeId == request.ChallengeId);
 
-                if (progress != null)
-                {
-                    await _challengeRepository.DeleteProgressAsync(progress.Id, cancellationToken);
-                }
-                else
-                {
-                    throw new NotFoundException("You are not part of this challenge.");
-                }
+            if (challenge.UserId != request.UserId)
+            {
+                throw new UnauthorizedAccessException("You are not the owner of this challenge.");
             }
 
+            await _challengeRepository.DeleteProgressByChallengeIdAsync(request.ChallengeId, cancellationToken);
+            await _challengeRepository.DeleteAsync(request.ChallengeId, cancellationToken);
             await _challengeRepository.SaveChangesAsync(cancellationToken);
         }
     }
