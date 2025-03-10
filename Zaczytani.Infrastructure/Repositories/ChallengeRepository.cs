@@ -43,16 +43,10 @@ internal class ChallengeRepository(BookDbContext dbContext) : IChallengeReposito
     }
     public async Task DeleteProgressByChallengeIdAsync(Guid challengeId, CancellationToken cancellationToken)
     {
-        var progresses = await _dbContext.ChallengeProgresses
+        await _dbContext.ChallengeProgresses
             .Where(p => p.ChallengeId == challengeId)
-            .ToListAsync(cancellationToken);
-
-        if (progresses.Any())
-        {
-            _dbContext.ChallengeProgresses.RemoveRange(progresses);
-        }
+            .ExecuteDeleteAsync(cancellationToken);
     }
-
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken) => await _dbContext.SaveChangesAsync(cancellationToken);
 }
