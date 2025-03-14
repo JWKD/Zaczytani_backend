@@ -24,27 +24,23 @@ internal class ChallengeRepository(BookDbContext dbContext) : IChallengeReposito
             .Where(cp => cp.UserId == userId)
             .ToListAsync(cancellationToken);
     }
+    public async Task<IEnumerable<ChallengeProgress>> GetChallengesWithProgressByChallengeId(Guid challengeId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.ChallengeProgresses
+            .Where(p => p.ChallengeId == challengeId)
+            .ToListAsync(cancellationToken);
+    }
     public async Task DeleteAsync(Guid challengeId, CancellationToken cancellationToken)
     {
-        var challenge = await GetChallenge(challengeId, cancellationToken);
-        if (challenge != null)
-        {
-            _dbContext.Challenges.Remove(challenge);
-        }
+        await _dbContext.Challenges
+            .Where(c => c.Id == challengeId)
+            .ExecuteDeleteAsync(cancellationToken);
     }
 
     public async Task DeleteProgressAsync(Guid progressId, CancellationToken cancellationToken)
     {
-        var progress = await _dbContext.ChallengeProgresses.FirstOrDefaultAsync(p => p.Id == progressId, cancellationToken);
-        if (progress != null)
-        {
-            _dbContext.ChallengeProgresses.Remove(progress);
-        }
-    }
-    public async Task DeleteProgressByChallengeIdAsync(Guid challengeId, CancellationToken cancellationToken)
-    {
         await _dbContext.ChallengeProgresses
-            .Where(p => p.ChallengeId == challengeId)
+            .Where(p => p.Id == progressId)
             .ExecuteDeleteAsync(cancellationToken);
     }
 

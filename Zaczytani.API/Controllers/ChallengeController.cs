@@ -34,7 +34,7 @@ public class ChallengeController(IMediator mediator) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ChallengeDto>>> GetAllChallenges(CancellationToken cancellationToken)
     {
-        var query = new GetAllChallengesQuery();
+        var query = new GetOtherUsersChallengesQuery();
         var challenges = await _mediator.Send(query, cancellationToken);
 
         return Ok(challenges);
@@ -49,6 +49,14 @@ public class ChallengeController(IMediator mediator) : ControllerBase
         return Ok(challenges);
     }
 
+    [HttpGet("MyChallenges")]
+    public async Task<ActionResult<IEnumerable<ChallengeDto>>> GetMyChallenges(CancellationToken cancellationToken)
+    {
+        var query = new GetMyChallengesQuery();
+        var challenges = await _mediator.Send(query, cancellationToken);
+        return Ok(challenges);
+    }
+
     [HttpDelete("{challengeId}")]
     public async Task<IActionResult> DeleteChallenge([FromRoute] Guid challengeId)
     {
@@ -57,10 +65,10 @@ public class ChallengeController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
-    [HttpDelete("{challengeId}/Progress")]
-    public async Task<IActionResult> DeleteChallengeProgress([FromRoute] Guid challengeId)
+    [HttpDelete("{challengeId}/Detach")]
+    public async Task<IActionResult> DetachFromChallenge([FromRoute] Guid challengeId)
     {
-        var command = new DeleteChallengeProgressCommand(challengeId);
+        var command = new DetachFromChallengeCommand(challengeId);
         await _mediator.Send(command);
         return NoContent();
     }

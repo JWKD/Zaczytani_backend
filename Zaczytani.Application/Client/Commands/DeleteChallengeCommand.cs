@@ -24,9 +24,19 @@ public record DeleteChallengeCommand(Guid ChallengeId) : IRequest, IUserIdAssign
                 throw new UnauthorizedAccessException("You are not the owner of this challenge.");
             }
 
-            await _challengeRepository.DeleteProgressByChallengeIdAsync(request.ChallengeId, cancellationToken);
-            await _challengeRepository.DeleteAsync(request.ChallengeId, cancellationToken);
-            await _challengeRepository.SaveChangesAsync(cancellationToken);
+            var progresses = await _challengeRepository.GetChallengesWithProgressByUserId(request.UserId, cancellationToken);
+            var hasParticipants = progresses.Any(p => p.ChallengeId == request.ChallengeId);
+
+            if (!hasParticipants)
+            {
+                await _challengeRepository.DeleteAsync(request.ChallengeId, cancellationToken);
+                await _challengeRepository.SaveChangesAsync(cancellationToken);
+            }
+            else
+            {
+                challenge.UserId = Guid.Empty;
+                await _challengeRepository.SaveChangesAsync(cancellationToken);
+            }
         }
     }
 }

@@ -9,9 +9,9 @@ namespace Zaczytani.Domain.Repositories
         IQueryable<Challenge> GetChallenges();
         Task<Challenge?> GetChallenge(Guid Id, CancellationToken cancellationToken);
         Task<IEnumerable<ChallengeProgress>> GetChallengesWithProgressByUserId(Guid userId, CancellationToken cancellationToken);
+        Task<IEnumerable<ChallengeProgress>> GetChallengesWithProgressByChallengeId(Guid challengeId, CancellationToken cancellationToken);
         Task DeleteAsync(Guid challengeId, CancellationToken cancellationToken);
         Task DeleteProgressAsync(Guid progressId, CancellationToken cancellationToken);
-        Task DeleteProgressByChallengeIdAsync(Guid challengeId, CancellationToken cancellationToken);
         Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
