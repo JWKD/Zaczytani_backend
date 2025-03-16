@@ -10,20 +10,21 @@ using Zaczytani.Domain.Repositories;
 
 namespace Zaczytani.Application.Client.Queries;
 
-public class GetAllChallengesQuery : IRequest<IEnumerable<ChallengeDto>>, IUserIdAssignable
+public class GetOtherUsersChallengesQuery : IRequest<IEnumerable<ChallengeDto>>, IUserIdAssignable
 {
     private Guid UserId { get; set; }
     public void SetUserId(Guid userId) => UserId = userId;
 
-    private class GetAllChallengesQueryHandler(IChallengeRepository challengeRepository, IMapper mapper) : IRequestHandler<GetAllChallengesQuery, IEnumerable<ChallengeDto>>
+    private class GetAllChallengesQueryHandler(IChallengeRepository challengeRepository, IMapper mapper) : IRequestHandler<GetOtherUsersChallengesQuery, IEnumerable<ChallengeDto>>
     {
         private readonly IChallengeRepository _challengeRepository = challengeRepository;
         private readonly IMapper _mapper = mapper;
 
-        public async Task<IEnumerable<ChallengeDto>> Handle(GetAllChallengesQuery request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<ChallengeDto>> Handle(GetOtherUsersChallengesQuery request, CancellationToken cancellationToken)
         {
             var challenges = await _challengeRepository.GetChallenges()
                 .Include(ch => ch.UserProgress)
+                .Where(ch => ch.UserId != request.UserId)
                 .Where(ch => !ch.UserProgress.Any(up => up.UserId == request.UserId))
                 .ToListAsync(cancellationToken);
 
