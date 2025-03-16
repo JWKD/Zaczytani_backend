@@ -45,6 +45,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IChallengeRepository, ChallengeRepository>();
         services.AddScoped<IEmailInfoRepository, EmailInfoRepository>();
         services.AddScoped<ISeeder, Seeder>();
+        services.AddScoped<SignInManager<User>, CustomLoginHandler>();
     }
 }
 

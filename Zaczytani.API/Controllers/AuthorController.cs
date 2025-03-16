@@ -21,6 +21,7 @@ public class AuthorController(IMediator mediator) : ControllerBase
         return Ok(authors);
     }
 
+    [Authorize(Roles = "ADMIN")]
     [HttpPost("{authorId}/AddImage")]
     public async Task<ActionResult<Guid>> AddAuthorPhoto([FromRoute] Guid authorId, [FromBody] string fileName)
     {

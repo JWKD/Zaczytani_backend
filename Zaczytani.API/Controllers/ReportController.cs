@@ -26,6 +26,7 @@ public class ReportController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "ADMIN")]
     [HttpPatch("{reportId}/Reject")]
     public async Task<ActionResult> RejectReport([FromRoute] Guid reportId)
     {
@@ -34,6 +35,7 @@ public class ReportController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "ADMIN")]
     [HttpPatch("{reportId}/Block")]
     public async Task<ActionResult> BlockReport([FromRoute] Guid reportId)
     {
@@ -42,6 +44,7 @@ public class ReportController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [Authorize(Roles = "ADMIN")]
     [HttpGet("Pending")]
     public async Task<ActionResult<IEnumerable<ReportDto>>> GetPendingReports()
     {

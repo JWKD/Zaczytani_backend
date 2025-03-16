@@ -25,6 +25,7 @@ public class BookRequestController(IMediator mediator) : ControllerBase
         return Ok(new { id });
     }
 
+    [Authorize(Roles = "ADMIN")]
     [HttpPost("Accept/{id}")]
     public async Task<IActionResult> AcceptBookRequest([FromRoute] Guid id, [FromBody] AcceptBookRequestCommand command)
     {
@@ -33,6 +34,7 @@ public class BookRequestController(IMediator mediator) : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = "ADMIN")]
     [HttpPatch("Reject/{id}")]
     public async Task<IActionResult> RejectBookRequest([FromRoute] Guid id)
     {
@@ -48,7 +50,7 @@ public class BookRequestController(IMediator mediator) : ControllerBase
         var bookRequests = await _mediator.Send(new GetUsersBookRequestsQuery());
         return Ok(bookRequests);
     }
-
+    [Authorize(Roles ="ADMIN")]
     [HttpGet("Pending")]
     public async Task<ActionResult<IEnumerable<BookRequestDto>>> GetPendingBookRequests()
     {
@@ -56,6 +58,7 @@ public class BookRequestController(IMediator mediator) : ControllerBase
         return Ok(bookRequests);
     }
 
+    [Authorize(Roles = "ADMIN")]
     [HttpGet("GeneratedBookDetails")]
     public async Task<ActionResult<IEnumerable<GeneratedBookDto>>> GetGeneratedBookDetails([FromQuery] GetGeneratedBookDetailsQuery query)
     {

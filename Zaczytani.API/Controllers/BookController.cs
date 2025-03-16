@@ -29,6 +29,7 @@ public class BookController(IMediator mediator, ILogger<BookController> logger) 
         return CreatedAtAction(nameof(GetBookDetails), new { id = bookId }, new { id = bookId });
     }
 
+    [Authorize(Roles = "ADMIN")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteBook([FromRoute] Guid id)
     {
@@ -53,6 +54,7 @@ public class BookController(IMediator mediator, ILogger<BookController> logger) 
         return Ok(result);
     }
 
+    [Authorize(Roles = "ADMIN")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> EditBookDetails(Guid id, [FromBody] EditBookDetailsCommand command)
     {
