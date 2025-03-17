@@ -7,6 +7,7 @@ using Zaczytani.Application.Client.Queries;
 using Zaczytani.Application.Dtos;
 using Zaczytani.Application.Filters;
 using Zaczytani.Application.Shared.Queries;
+using Zaczytani.Domain.Constants;
 using Zaczytani.Domain.Enums;
 using Zaczytani.Domain.Helpers;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
@@ -29,6 +30,7 @@ public class BookController(IMediator mediator, ILogger<BookController> logger) 
         return CreatedAtAction(nameof(GetBookDetails), new { id = bookId }, new { id = bookId });
     }
 
+    [Authorize(Roles = UserRoles.Admin)]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteBook([FromRoute] Guid id)
     {
@@ -53,6 +55,7 @@ public class BookController(IMediator mediator, ILogger<BookController> logger) 
         return Ok(result);
     }
 
+    [Authorize(Roles = UserRoles.Admin)]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> EditBookDetails(Guid id, [FromBody] EditBookDetailsCommand command)
     {
@@ -61,6 +64,7 @@ public class BookController(IMediator mediator, ILogger<BookController> logger) 
         return Ok();
     }
 
+    [Authorize(Roles = UserRoles.User)]
     [HttpGet("{id:guid}/Reviews")]
     public async Task<ActionResult<IEnumerable<BookReviewDto>>> GetBookReviews(Guid id)
     {
@@ -77,6 +81,7 @@ public class BookController(IMediator mediator, ILogger<BookController> logger) 
         return Ok(genres);
     }
 
+    [Authorize(Roles = UserRoles.User)]
     [HttpGet("PublishingHouses")]
     public async Task<ActionResult<BookDto>> GetPublishingHouses()
     {
@@ -84,6 +89,7 @@ public class BookController(IMediator mediator, ILogger<BookController> logger) 
         return Ok(result);
     }
 
+    [Authorize(Roles = UserRoles.User)]
     [HttpPost("Random")]
     public async Task<ActionResult<BookDto>> GetRandomBook()
     {
@@ -92,6 +98,7 @@ public class BookController(IMediator mediator, ILogger<BookController> logger) 
         return Ok(book);
     }
 
+    [Authorize(Roles = UserRoles.User)]
     [HttpGet("HasDrawn")]
     public async Task<ActionResult<BookDto>> HasDrawnBookToday()
     {
@@ -100,6 +107,7 @@ public class BookController(IMediator mediator, ILogger<BookController> logger) 
         return Ok(book);
     }
 
+    [Authorize(Roles = UserRoles.User)]
     [HttpGet("CurrentlyReading")]
     public async Task<ActionResult<IEnumerable<ReadingBookDto>>> GetCurrentlyReadingBooks()
     {
@@ -108,6 +116,7 @@ public class BookController(IMediator mediator, ILogger<BookController> logger) 
         return Ok(books);
     }
 
+    [Authorize(Roles = UserRoles.User)]
     [HttpPost("Recommended")]
     public async Task<ActionResult<IEnumerable<BookDto>>> GetRecommendedBooks([FromBody] GetRecommendedBooksQuery query)
     {

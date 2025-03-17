@@ -5,6 +5,7 @@ using Zaczytani.Application.Client.Queries;
 using Zaczytani.Application.Dtos;
 using Zaczytani.Application.Filters;
 using Zaczytani.Application.Shared.Commands;
+using Zaczytani.Domain.Constants;
 
 namespace Zaczytani.API.Controllers;
 
@@ -28,7 +29,7 @@ public class UserController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
-    [Authorize]
+    [Authorize(Roles = UserRoles.User)]
     [SetUserId]
     [HttpGet("Profile")]
     public async Task<ActionResult<UserProfileDto>> GetProfile(CancellationToken cancellationToken)

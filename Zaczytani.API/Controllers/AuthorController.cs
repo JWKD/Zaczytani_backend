@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Zaczytani.Application.Admin.Commands;
 using Zaczytani.Application.Dtos;
 using Zaczytani.Application.Shared.Queries;
+using Zaczytani.Domain.Constants;
 
 namespace Zaczytani.API.Controllers;
 
@@ -14,6 +15,7 @@ public class AuthorController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
+    [Authorize(Roles = UserRoles.User)]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<AuthorDto>>> GetAll()
     {
@@ -21,6 +23,7 @@ public class AuthorController(IMediator mediator) : ControllerBase
         return Ok(authors);
     }
 
+    [Authorize(Roles = UserRoles.Admin)]
     [HttpPost("{authorId}/AddImage")]
     public async Task<ActionResult<Guid>> AddAuthorPhoto([FromRoute] Guid authorId, [FromBody] string fileName)
     {
