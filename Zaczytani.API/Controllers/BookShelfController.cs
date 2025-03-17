@@ -5,11 +5,12 @@ using Zaczytani.Application.Client.Commands;
 using Zaczytani.Application.Client.Queries;
 using Zaczytani.Application.Dtos;
 using Zaczytani.Application.Filters;
+using Zaczytani.Domain.Constants;
 
 namespace Zaczytani.API.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(Roles = UserRoles.User)]
 [SetUserId]
 [Route("api/[controller]")]
 public class BookShelfController(IMediator mediator) : ControllerBase

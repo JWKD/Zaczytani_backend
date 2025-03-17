@@ -7,6 +7,7 @@ using Zaczytani.Application.Client.Commands;
 using Zaczytani.Application.Client.Queries;
 using Zaczytani.Application.Dtos;
 using Zaczytani.Application.Filters;
+using Zaczytani.Domain.Constants;
 
 namespace Zaczytani.API.Controllers;
 
@@ -18,6 +19,7 @@ public class BookRequestController(IMediator mediator) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
 
+    [Authorize(Roles =UserRoles.User)]
     [HttpPost]
     public async Task<IActionResult> CreateBookRequest([FromBody] CreateBookRequestCommand command)
     {
@@ -25,7 +27,7 @@ public class BookRequestController(IMediator mediator) : ControllerBase
         return Ok(new { id });
     }
 
-    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = UserRoles.Admin)]
     [HttpPost("Accept/{id}")]
     public async Task<IActionResult> AcceptBookRequest([FromRoute] Guid id, [FromBody] AcceptBookRequestCommand command)
     {
@@ -34,7 +36,7 @@ public class BookRequestController(IMediator mediator) : ControllerBase
         return Ok();
     }
 
-    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = UserRoles.Admin)]
     [HttpPatch("Reject/{id}")]
     public async Task<IActionResult> RejectBookRequest([FromRoute] Guid id)
     {
@@ -44,13 +46,14 @@ public class BookRequestController(IMediator mediator) : ControllerBase
         return Ok();
     }
 
+    [Authorize(Roles = UserRoles.User)]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserBookRequestDto>>> GetUsersBookRequests()
     {
         var bookRequests = await _mediator.Send(new GetUsersBookRequestsQuery());
         return Ok(bookRequests);
     }
-    [Authorize(Roles ="ADMIN")]
+    [Authorize(Roles =UserRoles.Admin)]
     [HttpGet("Pending")]
     public async Task<ActionResult<IEnumerable<BookRequestDto>>> GetPendingBookRequests()
     {
@@ -58,7 +61,7 @@ public class BookRequestController(IMediator mediator) : ControllerBase
         return Ok(bookRequests);
     }
 
-    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = UserRoles.Admin)]
     [HttpGet("GeneratedBookDetails")]
     public async Task<ActionResult<IEnumerable<GeneratedBookDto>>> GetGeneratedBookDetails([FromQuery] GetGeneratedBookDetailsQuery query)
     {
