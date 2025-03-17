@@ -84,6 +84,7 @@ internal class DtosProfile : Profile
             .ForMember(dest => dest.CriteriaValue, opt => opt.MapFrom(src => src.Challenge.CriteriaValue))
             .ForMember(dest => dest.Criteria, opt => opt.MapFrom(src => src.Challenge.Criteria))
             .ForMember(dest => dest.BooksRead, opt => opt.MapFrom(src => src.BooksRead))
+            .ForMember(dest => dest.ChallengeId, opt => opt.MapFrom(src => src.ChallengeId))
             .ForMember(dest => dest.IsCompleted, opt => opt.MapFrom(src => src.BooksRead >= src.Challenge.BooksToRead));
         #endregion
     }
