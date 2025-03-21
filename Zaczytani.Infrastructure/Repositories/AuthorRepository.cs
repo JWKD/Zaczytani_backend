@@ -11,6 +11,9 @@ internal class AuthorRepository(BookDbContext dbContext) : IAuthorRepository
 
     public IQueryable<Author> GetAll() => _dbContext.Authors;
 
+    public IQueryable<Author> GetBySearchPhrase(string searchPhrase) 
+        => _dbContext.Authors.Where(a => a.Name.ToLower().Contains(searchPhrase.ToLower()));
+
     public async Task<Author?> GetByIdAsync(Guid authorId)
     {
         return await _dbContext.Authors.FirstOrDefaultAsync(a => a.Id == authorId);

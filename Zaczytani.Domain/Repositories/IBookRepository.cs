@@ -6,6 +6,7 @@ namespace Zaczytani.Domain.Repositories;
 public interface IBookRepository
 {
     Task AddAsync(Book entity);
+    IQueryable<Book> GetBySearchPhraseWithAuthors(string searchPhrase);
     IQueryable<Book> GetBySearchPhrase(string searchPhrase);
     Task<Book?> GetByIdAsync(Guid bookId, CancellationToken cancellationToken);
     IQueryable<Book> GetUnseenBooks(Guid userId);

@@ -9,6 +9,7 @@ namespace Zaczytani.Infrastructure.Repositories;
 internal class UserRepository(BookDbContext dbContext) : IUserRepository
 {
     private readonly BookDbContext _dbContext = dbContext;
+
     public async Task<List<BookGenre>> GetFavoriteGenresAsync(Guid userId, CancellationToken cancellationToken)
     {
         var books = await _dbContext.BookShelves
@@ -22,5 +23,33 @@ internal class UserRepository(BookDbContext dbContext) : IUserRepository
             .Take(3)
             .Select(g => g.Key)
             .ToList();
+    }
+
+    public IQueryable<User> GetBySearchPhrase(string searchPhrase)
+    {
+        if (string.IsNullOrWhiteSpace(searchPhrase))
+            return _dbContext.Users.Where(u => false);
+
+        string[] keywords = searchPhrase.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        IQueryable<User> usersQuery = _dbContext.Users;
+
+        if (keywords.Length == 1)
+        {
+            string keyword = keywords[0];
+            usersQuery = usersQuery.Where(u =>
+                u.FirstName.Contains(keyword) ||
+                u.LastName.Contains(keyword));
+        }
+        else if (keywords.Length >= 2)
+        {
+            string firstName = keywords[0];
+            string lastName = string.Join(" ", keywords.Skip(1));
+
+            usersQuery = usersQuery.Where(u =>
+                (u.FirstName.Contains(firstName) && u.LastName.Contains(lastName)) ||
+                (u.FirstName.Contains(lastName) && u.LastName.Contains(firstName)));
+        }
+
+        return usersQuery;
     }
 }
