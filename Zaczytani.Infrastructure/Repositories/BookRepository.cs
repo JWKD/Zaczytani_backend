@@ -91,6 +91,7 @@ internal class BookRepository(BookDbContext dbContext) : IBookRepository
         // Jeśli nie mamy wystarczającej liczby książek, dobieramy losowe
         if (recommendedBooks.Count < pageSize)
         {
+            userBookIds = [.. userBookIds, .. recommendedBooks.Select(b => b.Id)];
             var additionalBooks = await GetRandomBooksAsync(userBookIds, pageSize - recommendedBooks.Count, cancellationToken);
             recommendedBooks.AddRange(additionalBooks);
         }
@@ -115,6 +116,7 @@ internal class BookRepository(BookDbContext dbContext) : IBookRepository
         // Jeśli nie mamy wystarczającej liczby książek, dobieramy losowe
         if (recommendedBooks.Count < pageSize)
         {
+            userBookIds = [.. userBookIds, .. recommendedBooks.Select(b => b.Id)];
             var additionalBooks = await GetRandomBooksAsync(userBookIds, pageSize - recommendedBooks.Count, cancellationToken);
             recommendedBooks.AddRange(additionalBooks);
         }
