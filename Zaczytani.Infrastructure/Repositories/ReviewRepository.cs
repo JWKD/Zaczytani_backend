@@ -51,5 +51,14 @@ internal class ReviewRepository(BookDbContext dbContext) : IReviewRepository
         .Where(r => r.IsFinal == true)
         .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
+    public async Task DeleteAsync(Guid reviewId,CancellationToken cancellationToken)
+    {
+        var review = await GetReviewByIdAsync(reviewId, cancellationToken);
+        if (review != null)
+        {
+            _dbContext.Reviews.Remove((Review)review);
+        }
+    }
+
     public Task SaveChangesAsync(CancellationToken cancellationToken) => _dbContext.SaveChangesAsync(cancellationToken);
 }

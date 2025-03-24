@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Zaczytani.Application.Admin.Commands;
 using Zaczytani.Application.Client.Commands;
 using Zaczytani.Application.Client.Queries;
 using Zaczytani.Application.Dtos;
@@ -42,6 +43,20 @@ public class ReviewController(IMediator mediator) : ControllerBase
 
         return NoContent();
     }
+    [HttpDelete("{reviewId}/Delete")]
+    public async Task<ActionResult> DeleteReview([FromRoute] Guid reviewId)
+    {
+        var command = new DeleteReviewCommand(reviewId);
+        await _mediator.Send(command);
+        return NoContent();
+    }
+   /* [HttpDelete("{reviewId:guid}/Delete")]
+    public async Task<IActionResult> DeleteComment([FromRoute] Guid id)
+    {
+        var command = new DeleteBookCommand(id);
+        await _mediator.Send(command);
+        return NoContent();
+    }*/
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<ReviewDetailsDto>> GetReviewDetails(Guid id)
