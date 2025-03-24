@@ -12,11 +12,16 @@ internal class BookRepository(BookDbContext dbContext) : IBookRepository
 
     public async Task AddAsync(Book entity) => await _dbContext.AddAsync(entity);
 
-    public IQueryable<Book> GetBySearchPhrase(string searchPhrase)
+    public IQueryable<Book> GetBySearchPhraseWithAuthors(string searchPhrase)
         => _dbContext.Books.Where(b => b.Title.Contains(searchPhrase)
                                     || b.Isbn.Contains(searchPhrase)
                                     || b.Authors.Any(a => a.Name.Contains(searchPhrase)))
         .OrderBy(b => b.Title);
+
+    public IQueryable<Book> GetBySearchPhrase(string searchPhrase)
+        => _dbContext.Books
+            .Where(b => b.Title.Contains(searchPhrase) || b.Isbn.Contains(searchPhrase))
+            .OrderBy(b => b.Title);
 
     public async Task<Book?> GetByIdAsync(Guid bookId, CancellationToken cancellationToken)
     {
@@ -86,6 +91,7 @@ internal class BookRepository(BookDbContext dbContext) : IBookRepository
         // Jeśli nie mamy wystarczającej liczby książek, dobieramy losowe
         if (recommendedBooks.Count < pageSize)
         {
+            userBookIds = [.. userBookIds, .. recommendedBooks.Select(b => b.Id)];
             var additionalBooks = await GetRandomBooksAsync(userBookIds, pageSize - recommendedBooks.Count, cancellationToken);
             recommendedBooks.AddRange(additionalBooks);
         }
@@ -110,6 +116,7 @@ internal class BookRepository(BookDbContext dbContext) : IBookRepository
         // Jeśli nie mamy wystarczającej liczby książek, dobieramy losowe
         if (recommendedBooks.Count < pageSize)
         {
+            userBookIds = [.. userBookIds, .. recommendedBooks.Select(b => b.Id)];
             var additionalBooks = await GetRandomBooksAsync(userBookIds, pageSize - recommendedBooks.Count, cancellationToken);
             recommendedBooks.AddRange(additionalBooks);
         }

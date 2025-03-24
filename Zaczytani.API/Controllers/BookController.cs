@@ -10,7 +10,6 @@ using Zaczytani.Application.Shared.Queries;
 using Zaczytani.Domain.Constants;
 using Zaczytani.Domain.Enums;
 using Zaczytani.Domain.Helpers;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Zaczytani.API.Controllers;
 
@@ -40,7 +39,7 @@ public class BookController(IMediator mediator, ILogger<BookController> logger) 
     }
 
     [HttpGet("Search")]
-    public async Task<ActionResult<IEnumerable<SearchDto>>> SearchBook([FromQuery] SearchBookQuery command)
+    public async Task<ActionResult<IEnumerable<SearchBookDto>>> SearchBook([FromQuery] SearchBookQuery command)
     {
         var books = await _mediator.Send(command);
 
