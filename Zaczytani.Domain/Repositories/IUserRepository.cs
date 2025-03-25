@@ -7,5 +7,8 @@ namespace Zaczytani.Domain.Repositories
     {
         Task<List<BookGenre>> GetFavoriteGenresAsync(Guid userId, CancellationToken cancellationToken);
         IQueryable<User> GetBySearchPhrase(string searchPhrase);
+        Task AddAsync(Follower entity, CancellationToken cancellationToken);
+        Task<bool> IsFollowingAsync(Guid followerId, Guid followedId, CancellationToken cancellationToken);
+        Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
