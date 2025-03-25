@@ -43,6 +43,7 @@ public class ReviewController(IMediator mediator) : ControllerBase
 
         return NoContent();
     }
+
     [HttpDelete("{reviewId}/Delete")]
     public async Task<ActionResult> DeleteReview([FromRoute] Guid reviewId)
     {
@@ -50,13 +51,14 @@ public class ReviewController(IMediator mediator) : ControllerBase
         await _mediator.Send(command);
         return NoContent();
     }
-   /* [HttpDelete("{reviewId:guid}/Delete")]
-    public async Task<IActionResult> DeleteComment([FromRoute] Guid id)
+
+    [HttpDelete("{commentId}/Comment/Delete")]
+    public async Task<IActionResult> DeleteComment([FromRoute] Guid commentId)
     {
-        var command = new DeleteBookCommand(id);
+        var command = new DeleteCommentCommand(commentId);
         await _mediator.Send(command);
         return NoContent();
-    }*/
+    }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult<ReviewDetailsDto>> GetReviewDetails(Guid id)

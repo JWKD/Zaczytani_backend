@@ -50,15 +50,27 @@ internal class ReviewRepository(BookDbContext dbContext) : IReviewRepository
             .ThenInclude(c => c.User)
         .Where(r => r.IsFinal == true)
         .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+   
+    public async Task<Comment?> GetCommentByIdAsync(Guid id, CancellationToken cancellationToken)
+       => await _dbContext.Comments
+       .Include(r => r.User)
+       .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
     public async Task DeleteAsync(Guid reviewId,CancellationToken cancellationToken)
     {
         var review = await GetReviewByIdAsync(reviewId, cancellationToken);
         if (review != null)
         {
-            _dbContext.Reviews.Remove((Review)review);
+            _dbContext.Reviews.Remove(review);
         }
     }
-
+    public async Task DeleteCommentAsync(Guid commentId,CancellationToken cancellationToken)
+    {
+        var comment = await GetCommentByIdAsync(commentId, cancellationToken);
+        if(comment!=null)
+        {
+            _dbContext.Comments.Remove(comment);
+        }
+    }
     public Task SaveChangesAsync(CancellationToken cancellationToken) => _dbContext.SaveChangesAsync(cancellationToken);
 }
