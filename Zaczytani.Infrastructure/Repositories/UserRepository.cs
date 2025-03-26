@@ -67,7 +67,7 @@ internal class UserRepository(BookDbContext dbContext) : IUserRepository
             .FirstOrDefaultAsync(f => f.FollowerId == followerId && f.FollowedId == followedId, cancellationToken);
     }
 
-    public async Task DeleteAsync(Guid FollowerId, Guid FollowedId, CancellationToken cancellationToken)
+    public async Task DeleteFollowAsync(Guid FollowerId, Guid FollowedId, CancellationToken cancellationToken)
     {
         var follow = await GetFollowAsync(FollowerId, FollowedId, cancellationToken);
         if (follow != null)

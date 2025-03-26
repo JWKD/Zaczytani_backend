@@ -22,7 +22,7 @@ public record UnFollowUserCommand(Guid FollowedId) : IRequest, IUserIdAssignable
             var follow = await _repository.GetFollowAsync(request.FollowerId,request.FollowedId, cancellationToken);
             if (follow == null)
                 throw new NotFoundException("Follow not found or you do not have access to it.");
-            await _repository.DeleteAsync(request.FollowerId,request.FollowedId, cancellationToken);
+            await _repository.DeleteFollowAsync(request.FollowerId,request.FollowedId, cancellationToken);
             await _repository.SaveChangesAsync(cancellationToken);
         }
     }
