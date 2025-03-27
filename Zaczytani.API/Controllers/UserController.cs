@@ -49,13 +49,4 @@ public class UserController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("CurrentUserId")]
-    [Authorize(Roles = UserRoles.User)]
-    [SetUserId]
-    public async Task<ActionResult<Guid>> GetCurrentUserId(CancellationToken cancellationToken)
-    {
-        var userId = await _mediator.Send(new GetCurrentUserIdQuery(), cancellationToken);
-        return Ok(userId);
-    }
-
 }
