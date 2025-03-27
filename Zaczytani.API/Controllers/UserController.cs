@@ -30,12 +30,11 @@ public class UserController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("Profile/{userId}")]
     [Authorize(Roles = UserRoles.User)]
-    [SetUserId]
-    [HttpGet("Profile")]
-    public async Task<ActionResult<UserProfileDto>> GetProfile(CancellationToken cancellationToken)
+    public async Task<ActionResult<UserProfileDto>> GetUserProfileById([FromRoute] Guid userId, CancellationToken cancellationToken)
     {
-        var query = new GetUserProfileQuery();
+        var query = new GetUserProfileByIdQuery(userId);
         var profile = await _mediator.Send(query, cancellationToken);
         return Ok(profile);
     }
@@ -59,4 +58,5 @@ public class UserController(IMediator mediator) : ControllerBase
         await _mediator.Send(command);
         return NoContent();
     }
+
 }
