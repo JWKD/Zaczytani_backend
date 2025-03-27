@@ -49,4 +49,14 @@ public class UserController(IMediator mediator) : ControllerBase
         await _mediator.Send(command);
         return NoContent();
     }
+
+    [Authorize(Roles = UserRoles.User)]
+    [SetUserId]
+    [HttpDelete("UnFollow/{followedId}")]
+    public async Task<IActionResult> UnFollow([FromRoute] Guid followedId)
+    {
+        var command = new UnFollowUserCommand(followedId);
+        await _mediator.Send(command);
+        return NoContent();
+    }
 }
