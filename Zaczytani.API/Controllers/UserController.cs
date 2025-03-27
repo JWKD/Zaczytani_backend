@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Zaczytani.Application.Client.Commands;
 using Zaczytani.Application.Client.Queries;
 using Zaczytani.Application.Dtos;
 using Zaczytani.Application.Filters;
@@ -36,6 +37,16 @@ public class UserController(IMediator mediator) : ControllerBase
         var query = new GetUserProfileByIdQuery(userId);
         var profile = await _mediator.Send(query, cancellationToken);
         return Ok(profile);
+    }
+
+    [Authorize(Roles = UserRoles.User)]
+    [SetUserId]
+    [HttpPost("Follow/{followedId}")]
+    public async Task<IActionResult> Follow([FromRoute] Guid followedId)
+    {
+        var command = new FollowUserCommand(followedId);
+        await _mediator.Send(command);
+        return NoContent();
     }
 
     [HttpGet("CurrentUserId")]
