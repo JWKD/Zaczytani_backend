@@ -30,6 +30,13 @@ internal class DtosProfile : Profile
             .ForMember(x => x.Reviews, opt => opt.MapFrom(src => src.Reviews.Where(r => r.Content != null).Count()))
             .ForMember(x => x.ImageUrl, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Image) ? null : $"{imageBaseUrl}{src.Image}"));
 
+        CreateMap<Book, BookSearchAuthorsDto>()
+            .ForMember(x => x.PublishingHouse, opt => opt.MapFrom(src => src.PublishingHouse.Name))
+            .ForMember(x => x.Rating, opt => opt.MapFrom(src => src.Reviews.Where(r => r.Rating != null).Average(r => r.Rating)))
+            .ForMember(x => x.RatingCount, opt => opt.MapFrom(src => src.Reviews.Where(r => r.Rating != null).Count()))
+            .ForMember(x => x.Reviews, opt => opt.MapFrom(src => src.Reviews.Where(r => r.Content != null).Count()))
+            .ForMember(x => x.ImageUrl, opt => opt.MapFrom(src => string.IsNullOrEmpty(src.Image) ? null : $"{imageBaseUrl}{src.Image}"));
+
         CreateMap<Book, ReadingBookDto>();
 
         CreateMap<Book, ReviewDetailsBookDto>();
