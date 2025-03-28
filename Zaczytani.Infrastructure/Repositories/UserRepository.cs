@@ -52,4 +52,29 @@ internal class UserRepository(BookDbContext dbContext) : IUserRepository
 
         return usersQuery;
     }
+
+    public async Task AddAsync(Follower entity, CancellationToken cancellationToken) => await _dbContext.AddAsync(entity, cancellationToken);
+
+    public async Task<bool> IsFollowingAsync(Guid followerId, Guid followedId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Followers
+            .AnyAsync(f => f.FollowerId == followerId && f.FollowedId == followedId, cancellationToken);
+    }
+
+    public async Task<Follower?> GetFollowAsync(Guid followerId, Guid followedId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Followers
+            .FirstOrDefaultAsync(f => f.FollowerId == followerId && f.FollowedId == followedId, cancellationToken);
+    }
+
+    public async Task DeleteFollowAsync(Guid FollowerId, Guid FollowedId, CancellationToken cancellationToken)
+    {
+        var follow = await GetFollowAsync(FollowerId, FollowedId, cancellationToken);
+        if (follow != null)
+        {
+            _dbContext.Followers.Remove(follow);
+        }
+    }
+
+    public Task SaveChangesAsync(CancellationToken cancellationToken) => _dbContext.SaveChangesAsync(cancellationToken);
 }

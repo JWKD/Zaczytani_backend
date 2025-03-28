@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Zaczytani.Application.Client.Commands;
 using Zaczytani.Application.Client.Queries;
 using Zaczytani.Application.Dtos;
 using Zaczytani.Application.Filters;
@@ -30,15 +31,35 @@ public class UserController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("Profile/{userId}")]
     [Authorize(Roles = UserRoles.User)]
-    [SetUserId]
-    [HttpGet("Profile")]
-    public async Task<ActionResult<UserProfileDto>> GetProfile(CancellationToken cancellationToken)
+    public async Task<ActionResult<UserProfileDto>> GetUserProfileById([FromRoute] Guid userId, CancellationToken cancellationToken)
     {
-        var query = new GetUserProfileQuery();
+        var query = new GetUserProfileByIdQuery(userId);
         var profile = await _mediator.Send(query, cancellationToken);
         return Ok(profile);
     }
+
+    [Authorize(Roles = UserRoles.User)]
+    [SetUserId]
+    [HttpPost("Follow/{followedId}")]
+    public async Task<IActionResult> Follow([FromRoute] Guid followedId)
+    {
+        var command = new FollowUserCommand(followedId);
+        await _mediator.Send(command);
+        return NoContent();
+    }
+
+    [Authorize(Roles = UserRoles.User)]
+    [SetUserId]
+    [HttpDelete("UnFollow/{followedId}")]
+    public async Task<IActionResult> UnFollow([FromRoute] Guid followedId)
+    {
+        var command = new UnFollowUserCommand(followedId);
+        await _mediator.Send(command);
+        return NoContent();
+    }
+
 
     [SetUserId]
     [HttpGet("Info")]
