@@ -6,6 +6,7 @@ using Zaczytani.Application.Client.Queries;
 using Zaczytani.Application.Dtos;
 using Zaczytani.Application.Filters;
 using Zaczytani.Application.Shared.Commands;
+using Zaczytani.Application.Shared.Queries;
 using Zaczytani.Domain.Constants;
 
 namespace Zaczytani.API.Controllers;
@@ -59,4 +60,12 @@ public class UserController(IMediator mediator) : ControllerBase
         return NoContent();
     }
 
+
+    [SetUserId]
+    [HttpGet("Info")]
+    public async Task<ActionResult<UserProfileDto>> GetInfo(CancellationToken cancellationToken)
+    {
+        var info = await _mediator.Send(new GetUserInfoQuery(), cancellationToken);
+        return Ok(info);
+    }
 }
