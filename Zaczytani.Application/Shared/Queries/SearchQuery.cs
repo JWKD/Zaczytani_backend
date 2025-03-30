@@ -21,7 +21,7 @@ public record SearchQuery(string SearchPhrase) : IRequest<SearchDto>
                 .Include(b => b.Authors)
                 .Include(b => b.PublishingHouse)
                 .Include(b => b.Reviews)
-                .ProjectTo<BookSearchDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<BookSearchAuthorsDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 
             var authorDtos = await _authorRepository.GetBySearchPhrase(request.SearchPhrase)
