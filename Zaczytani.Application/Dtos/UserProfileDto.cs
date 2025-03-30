@@ -11,4 +11,8 @@ public class UserProfileDto
     public IEnumerable<BookDto> ReadBooks { get; set; } = [];
     public IEnumerable<BookDto> CurrentlyReading { get; set; } = [];
     public IEnumerable<ChallengeProgressDto> ChallengeProgresses { get; set; } = [];
+    public int FollowersCount { get; set; }
+    public int FollowingCount { get; set; }
+    public bool IsFollowed { get; set; }
+
 }
