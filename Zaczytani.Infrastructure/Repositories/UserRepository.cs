@@ -75,6 +75,11 @@ internal class UserRepository(BookDbContext dbContext) : IUserRepository
             _dbContext.Followers.Remove(follow);
         }
     }
+    public async Task<int> GetFollowersCountAsync(Guid userId, CancellationToken cancellationToken)
+    => await _dbContext.Followers.CountAsync(f => f.FollowedId == userId, cancellationToken);
+
+    public async Task<int> GetFollowingCountAsync(Guid userId, CancellationToken cancellationToken)
+        => await _dbContext.Followers.CountAsync(f => f.FollowerId == userId, cancellationToken);
 
     public Task SaveChangesAsync(CancellationToken cancellationToken) => _dbContext.SaveChangesAsync(cancellationToken);
 }

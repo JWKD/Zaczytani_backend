@@ -11,6 +11,9 @@ namespace Zaczytani.Domain.Repositories
         Task<bool> IsFollowingAsync(Guid followerId, Guid followedId, CancellationToken cancellationToken);
         Task<Follower?> GetFollowAsync(Guid followerId, Guid followedId, CancellationToken cancellationToken);
         Task DeleteFollowAsync(Guid FollowerId, Guid FollowedId, CancellationToken cancellationToken);
+        Task<int> GetFollowersCountAsync(Guid userId, CancellationToken cancellationToken);
+        Task<int> GetFollowingCountAsync(Guid userId, CancellationToken cancellationToken);
+
         Task SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
