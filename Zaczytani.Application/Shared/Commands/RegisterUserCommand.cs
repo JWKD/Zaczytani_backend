@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Zaczytani.Domain.Constants;
 using Zaczytani.Domain.Entities;
 using Zaczytani.Domain.Exceptions;
 using Zaczytani.Domain.Repositories;
@@ -44,6 +45,8 @@ public class RegisterUserCommand : IRequest
             {
                 throw new BadRequestException(result.Errors.First().Description);
             }
+
+            await _userManager.AddToRoleAsync(user, UserRoles.User);
 
             await CreateDefaultBookShelves(user.Id, cancellationToken);
 
