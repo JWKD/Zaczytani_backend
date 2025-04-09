@@ -26,7 +26,7 @@ public class CustomLoginHandler : SignInManager<User>
 
     public override async Task<SignInResult> PasswordSignInAsync(string userName, string password, bool isPersistent, bool lockoutOnFailure)
     {
-        var user = await UserManager.FindByNameAsync(userName);
+        var user = await UserManager.FindByNameAsync(userName) ?? await UserManager.FindByEmailAsync(userName);
         if (user == null)
         {
             return SignInResult.Failed;
@@ -46,6 +46,6 @@ public class CustomLoginHandler : SignInManager<User>
             _logger.LogWarning($"[CustomLoginHandler] Użytkownik {userName} jest userem i próbuje zalogować się na mobilce.");
             return SignInResult.Failed;
         }
-        return await base.PasswordSignInAsync(userName, password, isPersistent, lockoutOnFailure);
+        return await base.PasswordSignInAsync(user.UserName, password, isPersistent, lockoutOnFailure);
     }
 }
