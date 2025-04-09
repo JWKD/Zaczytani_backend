@@ -60,7 +60,13 @@ internal class BookDbContext(DbContextOptions options) : IdentityDbContext<User,
             .HasOne(c => c.Review)
             .WithMany(r => r.Comments)
             .HasForeignKey(c => c.ReviewId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Comment>()
+            .HasOne(c => c.User)
+            .WithMany(u => u.Comments)
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.ClientSetNull);
 
         modelBuilder.Entity<Report>()
             .HasOne(r => r.Review)
