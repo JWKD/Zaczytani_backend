@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Zaczytani.Application.Filters;
+using Zaczytani.Application.Services;
 using Zaczytani.Domain.Entities;
 using Zaczytani.Domain.Exceptions;
 using Zaczytani.Domain.Repositories;
@@ -15,9 +16,10 @@ public record CreateCommentCommand(string Content) : IRequest, IUserIdAssignable
     private Guid UserId { get; set; }
     public void SetUserId(Guid userId) => UserId = userId;
 
-    private class CreateCommentCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IMediator mediator) : IRequestHandler<CreateCommentCommand>
+    private class CreateCommentCommandHandler(IReviewRepository reviewRepository, IMapper mapper, IBadgeAssignerService badgeAssignerService, IMediator mediator) : IRequestHandler<CreateCommentCommand>
     {
         private readonly IReviewRepository _reviewRepository = reviewRepository;
+        private readonly IBadgeAssignerService _badgeAssignerService = badgeAssignerService;
         private readonly IMapper _mapper = mapper;
         private readonly IMediator _mediator = mediator;
 
@@ -32,6 +34,10 @@ public record CreateCommentCommand(string Content) : IRequest, IUserIdAssignable
 
             await _reviewRepository.AddCommentAsync(comment, cancellationToken);
             await _reviewRepository.SaveChangesAsync(cancellationToken);
+
+            _badgeAssignerService.SetUserId(request.UserId);
+            var count = await _reviewRepository.CountUserCommentsAsync(request.UserId, cancellationToken);
+            await _badgeAssignerService.CheckCommentBadgesAsync(count, cancellationToken);
 
             await _mediator.Send(new CommentCreatedCommand(request.ReviewId), cancellationToken);
         }

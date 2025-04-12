@@ -9,6 +9,7 @@ using Zaczytani.Application.Configuration;
 using Zaczytani.Application.Http;
 using Zaczytani.Application.Mailer;
 using Zaczytani.Application.Profiles;
+using Zaczytani.Application.Services;
 using Zaczytani.Domain.Entities;
 
 namespace Zaczytani.Application.Extenstions;
@@ -44,5 +45,6 @@ public static class ServiceCollectionExtension
             client.BaseAddress = new Uri(config.BaseUrl);
         });
 
+        services.AddScoped<IBadgeAssignerService, BadgeAssignerService>();
     }
 }

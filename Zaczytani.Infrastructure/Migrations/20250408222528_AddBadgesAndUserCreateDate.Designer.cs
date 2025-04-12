@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Zaczytani.Infrastructure.Persistance;
 
@@ -11,9 +12,11 @@ using Zaczytani.Infrastructure.Persistance;
 namespace Zaczytani.Infrastructure.Migrations
 {
     [DbContext(typeof(BookDbContext))]
-    partial class BookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250408222528_AddBadgesAndUserCreateDate")]
+    partial class AddBadgesAndUserCreateDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -191,7 +194,12 @@ namespace Zaczytani.Infrastructure.Migrations
                     b.Property<int>("Type")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Badges");
                 });
@@ -634,27 +642,6 @@ namespace Zaczytani.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Zaczytani.Domain.Entities.UserBadge", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BadgeId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BadgeId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserBadges");
-                });
-
             modelBuilder.Entity("Zaczytani.Domain.Entities.UserDrawnBook", b =>
                 {
                     b.Property<Guid>("Id")
@@ -789,6 +776,17 @@ namespace Zaczytani.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Zaczytani.Domain.Entities.Badge", b =>
+                {
+                    b.HasOne("Zaczytani.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Zaczytani.Domain.Entities.Book", b =>
@@ -936,25 +934,6 @@ namespace Zaczytani.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Zaczytani.Domain.Entities.UserBadge", b =>
-                {
-                    b.HasOne("Zaczytani.Domain.Entities.Badge", "Badge")
-                        .WithMany("UserBadges")
-                        .HasForeignKey("BadgeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Zaczytani.Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Badge");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Zaczytani.Domain.Entities.UserDrawnBook", b =>
                 {
                     b.HasOne("Zaczytani.Domain.Entities.Book", "Book")
@@ -972,11 +951,6 @@ namespace Zaczytani.Infrastructure.Migrations
                     b.Navigation("Book");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Zaczytani.Domain.Entities.Badge", b =>
-                {
-                    b.Navigation("UserBadges");
                 });
 
             modelBuilder.Entity("Zaczytani.Domain.Entities.Book", b =>

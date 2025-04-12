@@ -10,6 +10,7 @@ using Zaczytani.Infrastructure.Persistance;
 using Zaczytani.Infrastructure.Repositories;
 using Zaczytani.Infrastructure.Seeders;
 
+
 namespace Zaczytani.Infrastructure.Extenstions;
 
 public static class ServiceCollectionExtension
@@ -44,6 +45,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IChallengeRepository, ChallengeRepository>();
         services.AddScoped<IEmailInfoRepository, EmailInfoRepository>();
+        services.AddScoped<IBadgeRepository, BadgeRepository>();
         services.AddScoped<ISeeder, Seeder>();
         services.AddScoped<SignInManager<User>, CustomLoginHandler>();
     }

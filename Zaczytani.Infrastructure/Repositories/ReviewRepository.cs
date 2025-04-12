@@ -55,6 +55,15 @@ internal class ReviewRepository(BookDbContext dbContext) : IReviewRepository
        => await _dbContext.Comments
        .Include(r => r.User)
        .FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+    public async Task<int> CountUserReviewsAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Reviews
+            .CountAsync(r => r.UserId == userId, cancellationToken);
+    }
+    public async Task<int> CountUserCommentsAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Comments.CountAsync(c => c.UserId == userId, cancellationToken);
+    }
 
     public async Task DeleteAsync(Guid reviewId,CancellationToken cancellationToken)
     {

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Configuration;
+using Zaczytani.Application.Services;
 using Zaczytani.Domain.Constants;
 using Zaczytani.Domain.Entities;
 using Zaczytani.Domain.Exceptions;
@@ -20,13 +21,14 @@ public class RegisterUserCommand : IRequest
     public string Password { get; set; }
     public string Email { get; set; }
 
-    public class RegisterUserCommandHandler(UserManager<User> userManager, IUserStore<User> userStore, IEmailSender<User> emailSender, IConfiguration configuration, IBookShelfRepository bookShelfRepository) : IRequestHandler<RegisterUserCommand>
+    public class RegisterUserCommandHandler(UserManager<User> userManager, IUserStore<User> userStore, IEmailSender<User> emailSender, IConfiguration configuration, IBookShelfRepository bookShelfRepository, IBadgeAssignerService badgeAssignerService) : IRequestHandler<RegisterUserCommand>
     {
         private readonly UserManager<User> _userManager = userManager;
         private readonly IUserStore<User> _userStore = userStore;
         private readonly IUserEmailStore<User> _emailStore = (IUserEmailStore<User>)userStore;
         private readonly IEmailSender<User> _emailSender = emailSender;
         private readonly IBookShelfRepository _bookShelfRepository = bookShelfRepository;
+        private readonly IBadgeAssignerService _badgeAssignerService = badgeAssignerService;
         private readonly string _frontendUrl = configuration.GetSection("FrontendUrl").Value
             ?? throw new InvalidOperationException("Frontend URL is not configured. Please set 'FrontendUrl' in appsettings.json.");
 
@@ -49,6 +51,9 @@ public class RegisterUserCommand : IRequest
             await _userManager.AddToRoleAsync(user, UserRoles.User);
 
             await CreateDefaultBookShelves(user.Id, cancellationToken);
+
+            _badgeAssignerService.SetUserId(user.Id);
+            await _badgeAssignerService.CheckAccountAgeBadgesAsync(cancellationToken);
 
             await SendConfirmationEmailAsync(user, request.Email);
         }

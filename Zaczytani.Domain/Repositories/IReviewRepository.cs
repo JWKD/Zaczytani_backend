@@ -12,6 +12,8 @@ public interface IReviewRepository
     Task<Review?> GetReviewByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<Review?> GetFinalReviewByIdAsync(Guid id, CancellationToken cancellationToken);
     Task<Comment?> GetCommentByIdAsync(Guid id, CancellationToken cancellationToken);
+    Task<int> CountUserReviewsAsync(Guid userId, CancellationToken cancellationToken);
+    Task<int> CountUserCommentsAsync(Guid userId, CancellationToken cancellationToken);
     Task DeleteAsync(Guid reviewId, CancellationToken cancellationToken);
     Task DeleteCommentAsync(Guid commentId, CancellationToken cancellationToken);
     Task SaveChangesAsync(CancellationToken cancellationToken);
