@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Zaczytani.Application.Filters;
+using Zaczytani.Application.Services;
 using Zaczytani.Domain.Enums;
 using Zaczytani.Domain.Repositories;
 
@@ -11,10 +12,11 @@ public record ReadBookCommand(Guid BookId) : IRequest, IUserIdAssignable
 
     public void SetUserId(Guid userId) => UserId = userId;
 
-    private class ReadBookCommandHandler(IBookShelfRepository bookShelfRepository, IMediator mediator) : IRequestHandler<ReadBookCommand>
+    private class ReadBookCommandHandler(IBookShelfRepository bookShelfRepository, IMediator mediator, IBadgeAssignerService badgeAssignerService) : IRequestHandler<ReadBookCommand>
     {
         private readonly IBookShelfRepository _bookShelfRepository = bookShelfRepository;
         private readonly IMediator _mediator = mediator;
+        private readonly IBadgeAssignerService _badgeAssignerService = badgeAssignerService;
 
         public async Task Handle(ReadBookCommand request, CancellationToken cancellationToken)
         {
@@ -31,6 +33,10 @@ public record ReadBookCommand(Guid BookId) : IRequest, IUserIdAssignable
 
                 var updateProgressesCommand = new UpdateChallengeProgressesCommand(request.BookId, true);
                 await _mediator.Send(updateProgressesCommand, cancellationToken);
+
+                badgeAssignerService.SetUserId(request.UserId);
+                var readCount = await bookShelfRepository.CountBooksAsync(request.UserId, BookShelfType.Read, cancellationToken);
+                await badgeAssignerService.CheckBookBadgesAsync(readCount, cancellationToken);
             }
         }
     }

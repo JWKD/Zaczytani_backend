@@ -93,6 +93,13 @@ internal class BookShelfRepository(BookDbContext dbContext) : IBookShelfReposito
             .Take(count)
             .ToListAsync(cancellationToken);
     }
+    public async Task<int> CountBooksAsync(Guid userId, BookShelfType type, CancellationToken cancellationToken)
+    {
+        return await _dbContext.BookShelves
+            .Where(bs => bs.UserId == userId && bs.Type == type)
+            .SelectMany(bs => bs.Books)
+            .CountAsync(cancellationToken);
+    }
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {

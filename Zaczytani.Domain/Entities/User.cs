@@ -17,6 +17,7 @@ public class User : IdentityUser<Guid>
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string? Image { get; set; }
+    public DateTime CreateDate { get; set; } = DateTime.UtcNow;
     public ICollection<UserDrawnBook> UserDrawnBooks { get; set; } = [];
     public ICollection<BookShelf> BookShelves { get; set; } = [];
     public ICollection<Challenge> Challenges { get; set; } = [];
@@ -25,6 +26,8 @@ public class User : IdentityUser<Guid>
     public ICollection<Comment> Comments { get; set; } = [];
     public ICollection<Follower> Followers { get; set; } = [];
     public ICollection<Follower> Following { get; set; } = [];
+    public ICollection<UserBadge> UserBadges { get; set; } = [];
+
 }
 
 public class UserRole : IdentityRole<Guid>

@@ -64,6 +64,13 @@ internal class Seeder(BookDbContext dbContext, IPasswordHasher<User> passwordHas
                 await _dbContext.BookShelves.AddRangeAsync(bookShelves);
                 await _dbContext.SaveChangesAsync();
             }
+
+            if (!_dbContext.Badges.Any())
+            {
+                var badges = GetDefaultBadges();
+                _dbContext.Badges.AddRange(badges);
+                await _dbContext.SaveChangesAsync();
+            }
         }
     }
 
@@ -477,4 +484,34 @@ internal class Seeder(BookDbContext dbContext, IPasswordHasher<User> passwordHas
             }
         ];
     }
+    private static IEnumerable<Badge> GetDefaultBadges()
+    {
+        return
+        [
+            new Badge { Id = Guid.NewGuid(), Type = BadgeType.FirstBook, Name = "Pierwsza Lektura", IconPath = "first_book.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.TenBooks, Name = "Lektor", IconPath = "ten_books.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.FiftyBooks, Name = "Bibliomaniak", IconPath = "fifty_books.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.HundredBooks, Name = "Książkowy Maratończyk", IconPath = "hundred_books.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.TwoHundredBooks, Name = "Mistrz Biblioteki", IconPath = "two_hundred_books.png" },
+
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.Newbie, Name = "Nowicjusz", IconPath = "newbie.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.RegularReader, Name = "Stały Czytelnik", IconPath = "regular_reader.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.Veteran, Name = "Weteran", IconPath = "veteran.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.LegendaryReader, Name = "Kultowy Czytelnik", IconPath = "legendary_reader.png" },
+
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.FirstReview, Name = "Pierwsza Recenzja", IconPath = "first_review.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.Reviewer, Name = "Recenzent", IconPath = "reviewer.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.LiteraryCritic, Name = "Krytyk Literacki", IconPath = "literary_critic.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.ReviewExpert, Name = "Ekspert Recenzji", IconPath = "review_expert.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.ReviewMaster, Name = "Mistrz Recenzji", IconPath = "review_master.png" },
+
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.FirstComment, Name = "Pierwszy Komentarz", IconPath = "first_comment.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.Commentator, Name = "Komentator", IconPath = "commentator.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.ActiveCommentator, Name = "Aktywny Komentator", IconPath = "active_commentator.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.Debater, Name = "Dyskutant", IconPath = "debater.png" },
+        new Badge { Id = Guid.NewGuid(), Type = BadgeType.DiscussionMaster, Name = "Mistrz Dyskusji", IconPath = "discussion_master.png" }
+        ];
+    }
+
+
 }

@@ -15,5 +15,6 @@ public interface IBookShelfRepository
     Task<int> GetBookCountOnReadShelfAsync(Guid bookId, CancellationToken cancellationToken);
     int GetBookCountOnReadShelf(Guid bookId);
     Task<IEnumerable<Book>> GetTopBooksByShelfIdAsync(Guid shelfId, int count, CancellationToken cancellationToken);
+    Task<int> CountBooksAsync(Guid userId, BookShelfType type, CancellationToken cancellationToken);
     Task SaveChangesAsync(CancellationToken cancellationToken);
 }
