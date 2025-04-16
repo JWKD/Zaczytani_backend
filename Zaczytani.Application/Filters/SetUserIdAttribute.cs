@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System.Security.Claims;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Zaczytani.Application.Filters;
 
@@ -12,13 +13,13 @@ public class SetUserIdAttribute : ActionFilterAttribute
 
         if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId))
         {
-            foreach (var argument in context.ActionArguments.Values)
-            {
-                if (argument is IUserIdAssignable userRequest)
-                {
-                    userRequest.SetUserId(userId);
-                }
-            }
+            context.HttpContext.Items["UserId"] = userId;
         }
+        else
+        {
+            context.Result = new UnauthorizedResult();
+        }
+
+        base.OnActionExecuting(context);
     }
 }

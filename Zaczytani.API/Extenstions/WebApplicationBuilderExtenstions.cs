@@ -1,4 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
+using Zaczytani.Domain.DescriptionEnumConver;
 
 namespace Zaczytani.API.Extenstions;
 
@@ -6,7 +7,11 @@ public static class WebApplicationBuilderExtenstions
 {
     public static void AddPresentation(this WebApplicationBuilder builder)
     {
-        builder.Services.AddControllers();
+        builder.Services.AddAuthentication();
+        builder.Services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new DescriptionEnumConverterFactory());
+        });
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
@@ -31,10 +36,13 @@ public static class WebApplicationBuilderExtenstions
             });
         });
 
+        var frontendUrl = builder.Configuration.GetSection("FrontendUrl").Value
+            ?? throw new InvalidOperationException("Frontend URL is not configured. Please set 'FrontendUrl' in appsettings.json.");
+
         builder.Services.AddCors(options => options.AddPolicy("frontend",
             policy =>
             {
-                policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+                policy.WithOrigins(frontendUrl).AllowAnyHeader().AllowAnyMethod().AllowCredentials();
             }
         ));
     }
